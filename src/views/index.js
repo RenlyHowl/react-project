@@ -6,7 +6,7 @@ import Login from "./Login"
 import NotFound from "./NotFound"
 import DashBoard from "./DashBoard"
 import Settings from "./Settings"
-export default {
+export {
   ArticleList,
   ArticleEdit,
   Login,

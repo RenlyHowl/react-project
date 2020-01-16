@@ -28,7 +28,7 @@ export const adminRouter = [
     component: DashBoard
   },
   {
-    pathname: "/admin/setings",
+    pathname: "/admin/settings",
     component: Settings
   },
   {
