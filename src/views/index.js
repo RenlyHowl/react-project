@@ -1,27 +1,52 @@
 /*导入并导出我们的页面 */
-// 第一种方式
-import ArticleList from "./Article"
-import ArticleEdit from "./Article/edit"
-import Login from "./Login"
-import NotFound from "./NotFound"
-import DashBoard from "./DashBoard"
-import Settings from "./Settings"
+// import ArticleList from "./Article"
+// import ArticleEdit from "./Article/edit"
+// import Login from "./Login"
+// import NotFound from "./NotFound"
+// import DashBoard from "./DashBoard"
+// import Settings from "./Settings"
+
+/*下面是懒加载 */
+import Loading from "./Loading"
+// 导入懒加载处理的第三方包
+import Loadable from "react-loadable"
+const DashBoard = Loadable({
+  loader: () => import("./DashBoard"),
+  loading: Loading
+})
+
+const Settings = Loadable({
+  loader: () => import("./Settings"),
+  loading: Loading
+})
+
+const Login = Loadable({
+  loader: () => import("./Login"),
+  loading: Loading
+})
+
+const NotFound = Loadable({
+  loader: () => import("./NotFound"),
+  loading: Loading
+})
+
+const ArticleList = Loadable({
+  loader: () => import("./Article"),
+  loading: Loading
+})
+
+const ArticleEdit = Loadable({
+  loader: () => import("./Article/edit"),
+  loading: Loading
+})
 export {
   ArticleList,
   ArticleEdit,
   Login,
   NotFound,
   DashBoard,
-  Settings
+  Settings,
+  Loading
 }
 
-
-// 统一导出我们的页面(组件)
-// 第二种方式
-// export {default as NotFound} from "./NotFound"
-// export {default as DashBoard} from "./DashBoard"
-// export {default as Login} from "./Login"
-// export {default as ArticleList} from "./Article"
-// export {default as ArticleEdit} from "./Article/edit"
-// export {default as Settings} from "./Settings"
 

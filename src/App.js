@@ -16,7 +16,8 @@ import {
   Route,
   Switch,
   Link,
-  Redirect
+  Redirect,
+  Loading  // 懒加载之前显示的组件
 } from "react-router-dom"
 
 
