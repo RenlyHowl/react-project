@@ -7,15 +7,13 @@ import App from './App';
 // 导入路由
 import {
   HashRouter as Router,
-  Link,
   Switch,
   Route,
   Redirect
 } from "react-router-dom"
 // 导入路由匹配规则
 import {
-  mainRouter,
-  adminRouter
+  mainRouter
 } from "./routes"
 
 

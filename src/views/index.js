@@ -7,9 +7,14 @@
 // import Settings from "./Settings"
 
 /*下面是懒加载 */
-import Loading from "./Loading"
+// 导入我们懒加载渲染的Loading组件
+import {Loading} from "../components"
+
 // 导入懒加载处理的第三方包
 import Loadable from "react-loadable"
+/*lazyLoad原理 使用我们自己的包(高阶组件) */
+// import Loadable from "./Loadable"
+
 const DashBoard = Loadable({
   loader: () => import("./DashBoard"),
   loading: Loading

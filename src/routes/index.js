@@ -25,20 +25,33 @@ export const mainRouter = [
 export const adminRouter = [
   {
     pathname: "/admin/dashboard",
-    component: DashBoard
+    component: DashBoard,
+    tittle: "仪表盘",
+    isNav: true,
+    icon: "dashboard"
   },
-  {
-    pathname: "/admin/settings",
-    component: Settings
-  },
+  
   {
     pathname: "/admin/article",
     component: ArticleList,
-    exact: true // 完全匹配
+    exact: true, // 完全匹配
+    tittle: "文章管理",
+    isNav: true,
+    icon: "unordered-list"
+    /* 如果我们这里配置了children的话;
+    在App组件里面就得在内层里面再次的循环渲染内存的子组件;
+    要不然children不能渲染出来*/
   },
   {
     pathname: "/admin/article/edit/:id",
     component: ArticleEdit
+  },
+  {
+    pathname: "/admin/settings",
+    component: Settings,
+    isNav: true,
+    tittle: "设置",
+    icon: "setting"
   },
 ]
 

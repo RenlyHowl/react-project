@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 
 // 应用antd组件库中的组件
-import {
-  Spin,
-  Alert,
-  Button
-} from "antd"
+// import {
+//   Spin,
+//   Alert,
+//   Button
+// } from "antd"
 // 导入路由匹配规则
 import {
   adminRouter
@@ -15,23 +15,20 @@ import {
 import {
   Route,
   Switch,
-  Link,
   Redirect,
-  Loading  // 懒加载之前显示的组件
 } from "react-router-dom"
 
+// 导入我们的layout布局文件 Frame插件
+import Frame  from "./components/Frame"
 
 export default class App extends Component {
   render() {
     // console.log(this.props);
     return (
       <>
-        <div>
-          {/* 这里可以写一些公共的部分;比如导航栏 */}
-          这是公共的部分
-        </div>
         {/* 渲染admin里面的页面 */}
-        
+        <Frame>
+
         <Switch>
         {
           adminRouter.map((route) => {
@@ -55,6 +52,9 @@ export default class App extends Component {
         {/* 也要有个404页面 */}
         <Redirect to="/404"/>
         </Switch>
+
+        </Frame>
+        
       </>
     )
   }
