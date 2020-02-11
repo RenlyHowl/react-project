@@ -15,13 +15,16 @@ import {
 import {
   mainRouter
 } from "./routes"
-
-
+// 导入antd组件库
+import {ConfigProvider} from "antd"
+import zhCN from "antd/es/locale/zh_CN"
 
 // 导入less样式
 import "./index.less"
 ReactDOM.render( 
-  <Router>
+<ConfigProvider locale={zhCN}>
+
+<Router>
     <Switch>
       
     <Route path="/admin" render={(routerProps) => {
@@ -59,4 +62,6 @@ ReactDOM.render(
     </Switch>
     
   </Router>
+
+</ConfigProvider>
   , document.getElementById('root'));
