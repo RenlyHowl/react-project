@@ -76,10 +76,10 @@ export const getArticleList = (offset = 0, limited = 10) => {
   // 返回的是一个Promise对象
 
   // 加传token验证
-  // return service.post("/api/v1/articlelist", {authToken: "renly"});
+  // return service.post("/api/v1/articlelist", {authToken: "renly"}); // 我们这里的authToken是放在拦截器里面进行设置的
   return service.post("/api/v1/articlelist", {
     offset,
-    limited
+    limited,
   });
 
   /*
@@ -87,4 +87,10 @@ export const getArticleList = (offset = 0, limited = 10) => {
   也就是我们下面写的地址
   */
   // "/admin/article"
+}
+
+
+// 这里是删除文章的方法
+export const deleteArticle = (id) => {
+  return service.post(`/api/v1/article/delete/${id}`)
 }

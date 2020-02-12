@@ -13,15 +13,21 @@ import {
   Button,
   Table,
   Tag,
-
+  Modal, // 弹框
+  Typography, //排版组件
+  message, // 全局提示组件
 } from "antd"
 
 // 导入我们axios请求实例
 /*请求文章数据 的接口 */
-import {getArticleList} from "../../request/Frame"
+import {
+  getArticleList,
+  deleteArticle
+} 
+from "../../request/Frame"
 // import ButtonGroup from 'antd/lib/button/button-group'
 const ButtonGroup = Button.Group
-
+const {Text} = Typography;
 // 进行调试 挂载到window对象上去
 // window.moment = moment
 
@@ -53,7 +59,13 @@ export default class List extends Component {
      * 定义当前页数和每一页的数据
      */
     offset: 0,
-    limited: 10
+    limited: 10,
+    /**
+     * 控制模态框的显示
+     */
+    visible: false,
+    delArticleContent: null, // 显示的content内容
+    delArticleId: null, //显示的id
     }
   }
   
@@ -84,10 +96,47 @@ export default class List extends Component {
           current: this.state.offset / this.state.limited + 1 // 设置了current属性才能在设置完pageSize之后够进行跳转到首页
         }}
         />
+        <Modal
+        title = {<Text strong>此操作不可逆,请谨慎!!!</Text>}
+        visible={this.state.visible}
+        onOk={this.handleOk.bind(this, this.state.delArticleId)}
+        onCancel={() => {
+          this.setState({
+            visible: false
+          })
+        }}
+        okButtonProps={{ disabled: false }}
+        cancelButtonProps={{ disabled: false }}
+        >
+          {/**我们这里要显示的record的是变量 我们可以用一个content变量来保存;
+           *当我们点击的时候将变量传过去即可  */ }
+          {this.state.delArticleContent}
+        </Modal>
 
         </Card>
       </div>
     )
+  }
+
+  // 处理弹框确定的函数
+  handleOk = (id) => {
+    // console.log(id); // 测试可以获取到id
+    deleteArticle(id)
+      .then((resp) => {
+        console.log(resp);
+        /**
+         * 删除成功后关闭弹框
+         */
+        this.setState({
+          visible: false
+        })
+
+        // 提示删除成功
+        message.success("删除成功", 0.1)
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
 
   // 导出excel的方法
@@ -217,7 +266,7 @@ export default class List extends Component {
       render: (text, record, index) => {
       return <ButtonGroup size="small">
         <Button type="primary">编辑</Button>
-        <Button type="danger">删除</Button>
+        <Button type="danger" onClick={this.delArticle.bind(this, record)}>删除</Button> 
       </ButtonGroup>
       }
   })
@@ -225,6 +274,55 @@ export default class List extends Component {
     return columns;
   }
 
+  // 删除文章的方法
+  delArticle = (record) => {
+    // 一、采用Modal函数的形式
+    // console.log(id); // 通过bind将我们的id给获取到
+    // 1. 上面就是点击按钮操作的实现
+    // 2. 弹出对话框
+    /**我们这里没有采用组件的形式;(return Modal的组件形式没有作用)
+     * 而是采用的全局的Modal的函数的形式
+     */
+    // Modal.confirm({
+    //   // 使用Typography排版组件
+    //   // title: `确定要删除${record.title}吗?`,
+    //   content: <>确定要删除<Text type="danger">{record.title}</Text>吗?</>, // 这就说明 我们这里可以使用标签 组件的形式
+    //   title: <Text strong>此操作不可逆,请谨慎!!!</Text>,
+    //   okText: "别墨迹,感觉删！",
+    //   cancelText: "残忍拒绝",
+    //   onOk: () => {
+    //     // 点击确定的回调
+
+    //     // 发送删除文章的请求
+    //     deleteArticle(record.id)
+    //     .then((resp) => {
+    //       console.log(resp);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     })
+
+    //   },
+    //   onCancel: () => {
+    //     //取消后的回调
+    //     /**
+    //      * 点击 取消弹框消失 这部分已经有了
+    //      */
+    //   }
+    // })
+    
+
+    // 二、采用Modal组件的形式
+    // 我们需要在render函数中渲染他
+    // 2.1弹出对话框
+    this.setState({
+      visible: true,
+      delArticleContent: <Typography>确定要删除<Text type="danger">{record.title}</Text>吗?</Typography>,
+      delArticleId: record.id
+    });
+  }
+
+  // 请求数据的方法
   getData = () => {
     this.setState({
       isLoading: true
