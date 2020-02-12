@@ -72,14 +72,14 @@ service.interceptors.response.use((resp) => {
 })
 
 // 4.暴露一个方法 返回我们的axios实例
-export const getArticleList = (offset = 0, limit = 10) => {
+export const getArticleList = (offset = 0, limited = 10) => {
   // 返回的是一个Promise对象
 
   // 加传token验证
   // return service.post("/api/v1/articlelist", {authToken: "renly"});
   return service.post("/api/v1/articlelist", {
     offset,
-    limit
+    limited
   });
 
   /*

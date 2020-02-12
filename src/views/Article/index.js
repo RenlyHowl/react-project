@@ -3,6 +3,10 @@ import React, { Component } from 'react'
 // 导入moment
 import moment from "moment"
 
+// 导入xlsx用于导出EXcel
+import XLSX from "xlsx"
+
+
 // 导入Card组件
 import {
   Card,
@@ -21,55 +25,6 @@ const ButtonGroup = Button.Group
 // 进行调试 挂载到window对象上去
 // window.moment = moment
 
-/*
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
-];
-
-const columns = [
-  {
-    title: '姓名',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  { //新加一个操作的功能
-    title: '操作',
-    dataIndex: 'actions',
-    key: 'actions',
-    render: (text, record, index) => {
-      // console.log(text, record, index);
-      return (
-      <span>
-      <a href="javascript;">delete{record.name}</a>
-      </span>
-      )
-    }
-  },
-];
-
-*/
-
 
 /**
  * 创建一个创建标题的方法
@@ -82,6 +37,7 @@ const titleDisplayMap = {
   createAt: "创建时间"
 }
 
+// let offset = 0; // 保存当前的数据offset
 export default class List extends Component {
   constructor() {
     super();
@@ -93,7 +49,11 @@ export default class List extends Component {
 
     /**定义数据加载是否完成的状态 */
     isLoading: false, // 默认为false
-
+    /**
+     * 定义当前页数和每一页的数据
+     */
+    offset: 0,
+    limited: 10
     }
   }
   
@@ -103,7 +63,7 @@ export default class List extends Component {
         <Card title="文章列表"
          bordered={false} 
          style={{ width: "100%" }}
-         extra={<Button type="primary">导出excel</Button>}
+         extra={<Button type="primary" onClick= {this.toExcel}>导出excel</Button>}
          >
         
         <Table 
@@ -114,8 +74,14 @@ export default class List extends Component {
         pagination={{
           // total:100, // 总的数据为100条 默认每页10条
           total: this.state.total,
-          defaultPageSize: 20,
-          simple: true,
+          defaultPageSize: this.state.limited,
+          // simple: true,
+          showQuickJumper: true, // 开启可以快速跳转页码
+          showSizeChanger: true, // 开启可以更改pageSize
+          onChange: this.onChange,
+          pageSizeOptions: ['10', '20', '30', '50'], // 设置更改显示每页数据的
+          onShowSizeChange: this.onShowSizeChange, // 我们这里是mock数据返回的只有10条
+          current: this.state.offset / this.state.limited + 1 // 设置了current属性才能在设置完pageSize之后够进行跳转到首页
         }}
         />
 
@@ -123,8 +89,90 @@ export default class List extends Component {
       </div>
     )
   }
-  
 
+  // 导出excel的方法
+  toExcel = () => {
+    // console.log("toExcel")
+    /**
+     * 在实际的项目中是前端发送一个ajax请求给后端;然后后端返回一个文件下载的地址
+     */
+
+    /* convert state to workbook */
+    // const ws = XLSX.utils.aoa_to_sheet(this.state.data);  // 这里的this.state.data是二维数组
+    // const ws = XLSX.utils.aoa_to_sheet([["a","b"],[1,2],[3,4]]); // 测试看是否能够输出一个excel文件
+
+    /**
+     * 组合数据1
+     */
+    // const columns = Object.values(titleDisplayMap);
+    // const data = this.state.dataSource.map((item) => {
+    //   for (var key in item) {
+    //     if (key === "createAt") {
+    //       item[key] = moment(item[key]).format("YYYY年MM月DD日 hh:mm:ss")
+    //     }
+    //   }
+    //   return (
+    //     Object.values(item)
+    //   )
+    // })
+    // data.unshift(columns);
+    // console.log(data)
+
+
+    /**
+     * 组合数据2
+     */
+    const data = [Object.keys(this.state.dataSource[0])]; // 注意我们的keys是无序的
+    for (var i = 0; i < this.state.dataSource.length; i++) {
+      // data.push(Object.values(this.state.dataSource[i]));
+
+      // 对于显示顺序 我们可以在插入push的时候 自定义
+      data.push([
+        this.state.dataSource[i].id,
+        this.state.dataSource[i].title,
+        this.state.dataSource[i].author,
+        this.state.dataSource[i].amount,
+        moment(this.state.dataSource[i].createAt).format("YYYY年MM月DD日 hh:mm:ss"), // 修改时间的显示格式
+        
+      ])
+    }
+    console.log(data)
+
+
+    // 导出excel文件
+    const ws = XLSX.utils.aoa_to_sheet(data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		/* generate XLSX file and send to client */
+		XLSX.writeFile(wb, "sheetjs.xlsx"); // C:/Users/Renly/Desktop/sheetjs.xlsx 测试了不能够直接加路径
+  }
+
+
+  onChange = (page, pageSize) => {
+    // console.log(page); // 当前页数
+    // console.log(pageSize) // 每一页显示的数据条数
+    // offset = (page - 1) * pageSize;
+    this.setState({
+      offset: (page - 1) * pageSize,
+      limited: pageSize
+    }, () => {
+      this.getData(); // 更改完之后再去请求数据(在他的回调函数里面)
+    })
+  }
+  onShowSizeChange = (current, size) => {
+    // 更改了pageSize之后 又得重新计算当前的page
+    // console.log(current);
+    // console.log(size) 显示当前的pageSize
+
+    /**重新发起请求 */
+    this.setState({
+      // offset: offset,
+      offset: 0, // 更改完之后 直接跳转到首页 但是我们发现没有跳转到首页 这是因为我们需要加上一个current的属性
+      limited: size
+    }, () => {
+      this.getData(); // 更改完之后再去请求数据(在他的回调函数里面)
+    })
+  }
 
 
 
@@ -182,12 +230,12 @@ export default class List extends Component {
       isLoading: true
     })
 
-    getArticleList()
+    getArticleList(this.state.offset, this.state.limited)
     .then((resp) => {
       
 
       // 测试看能不能请求到数据
-      console.log(resp);
+      // console.log(resp);
       /*进行数据的渲染 */
       // 取出key值
       const columnsKeys = Object.keys(resp.lists[0])
