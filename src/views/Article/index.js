@@ -16,6 +16,7 @@ import {
   Modal, // 弹框
   Typography, //排版组件
   message, // 全局提示组件
+  Tooltip, // 文字提示组件
 } from "antd"
 
 // 导入我们axios请求实例
@@ -66,6 +67,7 @@ export default class List extends Component {
     visible: false,
     delArticleContent: null, // 显示的content内容
     delArticleId: null, //显示的id
+    confirmLoading: false // 点击确定是否显示loading状态
     }
   }
   
@@ -105,6 +107,7 @@ export default class List extends Component {
             visible: false
           })
         }}
+        confirmLoading={this.state.confirmLoading}
         okButtonProps={{ disabled: false }}
         cancelButtonProps={{ disabled: false }}
         >
@@ -121,22 +124,62 @@ export default class List extends Component {
   // 处理弹框确定的函数
   handleOk = (id) => {
     // console.log(id); // 测试可以获取到id
+    this.setState({
+      confirmLoading: true // 加载loading
+    })
     deleteArticle(id)
       .then((resp) => {
         console.log(resp);
         /**
-         * 删除成功后关闭弹框
+         * 删除成功后关闭弹框 关闭loading
+         * 最好放到finally里面去处理
+         */
+        // this.setState({
+        //   visible: false,
+        //   confirmLoading: false
+        // })
+
+        // 提示删除成功 删除信息为我们后端返回的信息
+        message.success("请求成功", 0.1);
+
+        // 删除成功后再去取数据
+        /**
+         * 我们这里删除之后还是留在了当前页还是想回到首页
+         */
+        this.getData();// 留在当前页 直接请求数据
+
+        // 回到首页
+        /**
+         * 更改offset
+         */
+        // this.setState({
+        //   offset: 0
+        // });
+        // this.getData();
+
+        /**
+         * 直接写成回调函数的形式
          */
         this.setState({
-          visible: false
+          offset: 0
+        }, () => {
+          this.getData();
         })
+        
+      })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      /**
+         * 删除成功后关闭弹框 关闭loading
+         */
+    this.setState({
+      visible: false,
+      confirmLoading: false
+    })
 
-        // 提示删除成功
-        message.success("删除成功", 0.1)
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    })
   }
 
   // 导出excel的方法
@@ -238,7 +281,11 @@ export default class List extends Component {
           key: item,
           render: (text, record, index) => {
           const {amount} = record;
-          return <Tag color={amount >= 200 ?"red" : "blue"}>{record.amount}</Tag>
+          return (
+            <Tooltip placement="topLeft" title={amount >= 200 ?"超过200" : "小于200"} arrowPointAtCenter={true}>
+            <Tag color={amount >= 200 ?"red" : "blue"}>{record.amount}</Tag>
+          </Tooltip>
+          )
           }
         }
       }
