@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 
 import { 
-Layout,
-Menu, 
-// Breadcrumb, 
-Icon } from 'antd';
+  Layout,
+  Menu, 
+  // Breadcrumb, 
+  Icon 
+} from 'antd';
 // 导入logo图片
 import logo from "./logo.png"
 // 导入我们的样式
@@ -54,7 +55,7 @@ class Frame extends Component {
           // defaultSelectedKeys={['仪表盘']} // 默认选中仪表盘
           /*默认选中 与标题栏一样的菜单 */
           // defaultSelectedKeys={[this.props.location.pathname]}
-          selectedKeys={[this.props.location.pathname]}
+          selectedKeys={["/" + this.props.location.pathname.split("/")[1] + "/" + this.props.location.pathname.split("/")[2]]} // 这里就用这个pathname前面的两端
           // 使用Onclick属性 定义一个onMenuClick方法
           onClick={this.onMenuClick}
           style={{ height: '100%', borderRight: 0 }}

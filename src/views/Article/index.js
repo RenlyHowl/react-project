@@ -312,7 +312,7 @@ export default class List extends Component {
       key: "action",
       render: (text, record, index) => {
       return <ButtonGroup size="small">
-        <Button type="primary">编辑</Button>
+        <Button type="primary" onClick={this.toEdit.bind(this, record)}>编辑</Button>
         <Button type="danger" onClick={this.delArticle.bind(this, record)}>删除</Button> 
       </ButtonGroup>
       }
@@ -320,6 +320,21 @@ export default class List extends Component {
 
     return columns;
   }
+  // 编辑文章的方法
+  /**这里我们只需要id */
+  toEdit= (record) => {
+    /**
+     * 使用this.props.history对象的push方法进行页面的跳转;
+     * 跳转的地址查询我们的路由
+     */
+    // this.props.history.push({
+    //   pathname: `/admin/article/edit/${record.id}`,
+    //   state: {...record} // 传参数 隐氏传参 使用state
+    // })
+    this.props.history.push(`/admin/article/edit/${record.id}`)
+  }
+
+
 
   // 删除文章的方法
   delArticle = (record) => {
