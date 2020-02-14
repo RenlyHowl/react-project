@@ -51,54 +51,24 @@ class Edit extends Component {
         {/* 这里这个handleSumbit的方法 是我们下面的按钮点击之后的方法 */}
         <Form onSubmit={this.handleSubmit} className="login-form">
         <Form.Item 
-        validateStatus= {this.state.authorValidateStatus} // 检验状态
-        help = {this.state.authorHelp} // 提示信息
+        /**
+         * 使用rules的校验规则就不需要下面的校验状态和提示信息了
+         */
+        // validateStatus= {this.state.authorValidateStatus} // 检验状态
+        // help = {this.state.authorHelp} // 提示信息
+        label="作者"
         >
           {getFieldDecorator('username', { // username这个名字就是我们在输入框获取到信息提交的字段名
             rules: [// 匹配规则 提示信息 数组的形式
-              // { required: true, message: '请输入作者名称!' },
-              // {min: 2, message: "作者名字必须大于2位字符"},
-              // {max: 8, message: "作者名字必须小于8位字符"},
-              // 我们也可以自定义规则
-              {
-                validator: (rule, value, callback) => {
-                  // console.log(rule); // 对象
-                  // console.log(value); // 输入的文本框值
-                  // console.log(callback); // 回调函数
-                  // console.log({rule, value, callback})
-                  /**
-                   * 上面Form.Item组件我们要给他添加一个validatorStatus的状态;根据我们对value值的判断
-                   * 去更改validateStatus状态的改变从而改变他的样式(sucess和error);
-                   * 注意验证完了之后必须要调用callback回调函数
-                   */
-                  if(value.length > 0 && value.length <= 4) {
-                    this.setState({
-                      authorValidateStatus: "error",
-                      authorHelp: "作者名字必须大于4位字符"
-                    })
-                    // callback();
-                  } else if(value.length < 8) {
-                    this.setState({
-                      authorValidateStatus: "success",
-                      authorHelp: "作者名字可以使用"
-                    })
-                    // callback();
-                  } else {
-                    this.setState({
-                      authorValidateStatus: "error",
-                      authorHelp: "作者名字必须小于8位字符"
-                    })
-                    // callback(); //callback()函数调用加载最外层
-                  }
-                  callback(); //callback回调函数必须要加
-                }
-              }
+              { required: true, message: '请输入作者名称!' },
+              {min: 2, message: "作者名字必须大于2位字符"},
+              {max: 8, message: "作者名字必须小于8位字符"},
+              
             ], 
-          })(
-              <Input
+          })(<Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Username"
-              addonBefore={<span>作者：</span>}
+              // addonBefore={<span>作者：</span>} // 这里前面的作者我们使用Item里的label属性
             />
           )}
         </Form.Item>
