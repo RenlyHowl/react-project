@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 
+// 引入wangeditor富文本编辑器
+import wangEditor  from "wangeditor"
 
 import {
   Card,
@@ -13,14 +15,18 @@ import {
 } from "antd" 
 
 import zhCN from "antd/es/locale/zh_CN"
+// 引入富文本编辑器的样式
+import "./edit.less"
 
 @Form.create() // 这里跟样例 可以不要里面的这个对象
 class Edit extends Component {
   constructor() {
     super();
+    // 创建富文本编辑器的ref
+    this.editorRef = createRef();
     this.state = {
       authorValidateStatus: "validating", // 校验状态 可选有'success' 'warning' 'error' 'validating'
-      authorHelp: ""
+      authorHelp: "",
     }
   }
   
@@ -38,6 +44,35 @@ class Edit extends Component {
       }
     });
   };
+
+  initEditor = () => {
+    // 新建一个编辑器
+    // const editor = new wangEditor(this.editorRef.current);// 注意要加current
+    // editor.create();
+    /**
+     * 这里我们挂载到组件上;
+     * 挂载到组件上更好一点
+     */
+    this.editor = new wangEditor(this.editorRef.current);// 注意要加current
+    this.editor.customConfig.onchange =  (html) => { // 这里要写成箭头函数,不能this的指向会出问题
+      // html 即变化之后的内容
+      /**
+       * 编辑器的值 复制到对应控件的值身上
+       */
+    /**
+     * 如果是input控件就不用调用下面的API去手动的设置;
+     */
+    this.props.form.setFieldsValue({
+      content: html,// 将值赋值到content字段上 
+    });
+  }
+    this.editor.create();
+  }
+
+  /**在componentDidMount这个生命周期函数里初始化富文本编辑器 */
+  componentDidMount() {
+    this.initEditor(); // 初始化富文本编辑器
+  }
   render() {
     // console.log(this.props);
     /**
@@ -47,17 +82,14 @@ class Edit extends Component {
     /**
      * 通过this.props.location.state.title可以去到传过来的参数title
      */
+
+     // 测试打印一下这个wangeditor
+    //  console.log(wangEditor);
+    // console.log(this)
     const { getFieldDecorator } = this.props.form;// 我们加了上面这个高阶组件就可以 解构 得到this.props里的form了
     /**Form.Item布局 */
     const formItemLayout = {
       labelCol: { // 设置标签的col
-        /**
-         * col-sm- 平板 - 屏幕宽度等于或大于 576px
-         * col-md- 桌面显示器 - 屏幕宽度等于或大于 768px)
-         * col-lg- 大桌面显示器 - 屏幕宽度等于或大于 992px)
-         * col-xl- 超大桌面显示器 - 屏幕宽度等于或大于 1200px)
-         */
-        // xs: { span: 24},
         sm: { span: 24},
         xl: {span: 2}
       },
@@ -86,6 +118,7 @@ class Edit extends Component {
               {max: 8, message: "标题必须小于8位字符"},
               
             ], 
+            initialValue: "文章标题初始值", // 这里可以设置初值值
           })(<Input
               // prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} // 不要图标
               prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -167,14 +200,26 @@ class Edit extends Component {
             ], 
           })(
             // 内容输入不可能使用input输入框
-            <textarea 
-            placeholder="请输入文章内容"
-            style={{width: "100%", resize: "none", height: "500px", overflow: "auto", fontSize: "14px"}}
-            ></textarea>
+            // <textarea 
+            // placeholder="请输入文章内容"
+            // style={{width: "100%", resize: "none", height: "500px", overflow: "auto", fontSize: "14px"}}
+            // ></textarea>
             /**
              * 也不能使用textarea,因为我们可能需要传一些图片
              */
             // 我们这里需要使用一个富文本编辑器
+            /**为了防止我们时间DatePicker不能选择 我们当前div设置一个样式;
+             * 让他的z-index为0 最小
+             */
+            <div
+            ref={this.editorRef}
+            className="qf-editor"
+            contentEditable={true} //不要只单纯的设置z-index为0;还要设置position为relative
+            //zIndex: 0, position: "relative"; 也可以在外面设置一个edit.less, 然后再引入
+            style={{width: "100%",minHeight: "300px", }} // 设置没minHeight就会自动增高了
+            >
+
+            </div>
 
           )}
         </Form.Item>
