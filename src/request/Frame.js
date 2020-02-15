@@ -100,3 +100,10 @@ export const deleteArticle = (id) => {
 export const editArticle = (id) => {
   return service.post(`/api/v1/article/${id}`)
 }
+
+// 通过id提交修改后文章的方法
+// 通过id获取单个文章的方法
+
+export const saveArticle = (id, params) => {
+  return service.post(`/api/v1/articleEdit/${id}`, params)
+}

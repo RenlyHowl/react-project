@@ -5,7 +5,8 @@ import wangEditor  from "wangeditor"
 
 // 引入编辑数据的方法
 import {
-  editArticle
+  editArticle,
+  saveArticle
 } from "../../request/Frame"
 import {
   Card,
@@ -13,9 +14,9 @@ import {
   Form, 
   Icon, 
   Input,
-  Row,
-  Col,
+  message,
   DatePicker, //选择时间组件
+  Spin
 } from "antd" 
 // 导入moment
 import moment from "moment"
@@ -33,22 +34,63 @@ class Edit extends Component {
     this.state = {
       authorValidateStatus: "validating", // 校验状态 可选有'success' 'warning' 'error' 'validating'
       authorHelp: "",
+      spinStatus: false, // 加载中组件的状态
+      spinTip: "", // 加载时的提示
     }
   }
   
   // 取消的函数
   cancelHandler = () => {
-    this.props.history.go(-1)
+    // console.log(this.props.history)
+    // this.props.history.go(-1)
+    this.props.history.goBack();
   }
   
+
   handleSubmit = e => {
     e.preventDefault();// 阻止默认行为
     /**下面的这个方法替我们去做错误的验证 */
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values); // 没有错误 就后台打印
+        // console.log('Received values of form: ', values); // 没有错误 就后台打印
         /**通过我们上面打印这些值 可以发现createAt是一个moment对象;我们需要把它转成时间戳 */
         // console.log(values.createAt.valueOf()) // 通过valueOf方法可以转成时间戳
+
+        /**
+         * 向后端发送请求保存我们的编辑文章数据
+         */
+        // 处理我们要发生请求的参数
+        // let {createAt, ...data} = values;
+        // createAt = values.createAt.valueOf();
+        // let params = {createAt, ...data}
+        // console.log(params)
+        /**也可以下面这样 */
+        const params = Object.assign({}, values, {
+          createAt: values.createAt.valueOf()
+        })
+        // console.log(params);
+        this.setState({
+          spinStatus: true,
+          spinTip: "正在保存中"
+        })
+        saveArticle(this.props.match.params.id, params)
+        .then((resp) => {
+          // console.log(resp) //能够拿到返回的信息
+          // message.success(resp.msg, 0.5); // 弹出提示框
+          /**
+           * 保存成功后;根据需求看是否需要留在当前页面
+           */
+          // this.props.history.push("/admin/article")
+          /**上面这两个写在一个函数里 */
+          message.success(resp.msg, 0.5, () => {
+            this.props.history.push("/admin/article")
+          })
+        })
+        .finally(() => {
+          this.setState({
+            spinStatus: false
+          })
+        })
       }
     });
   };
@@ -83,6 +125,12 @@ class Edit extends Component {
     /**
      * 这里id的获取是通过this.props.match.params.id来获取的
      */
+
+    // 设置加载组件的状态
+    this.setState({
+      spinStatus: true,
+      spinTip: "数据加载中"
+    })
     editArticle(this.props.match.params.id)
     .then((resp) => {
       // console.log(resp)
@@ -106,7 +154,9 @@ class Edit extends Component {
 
     })
     .finally(() => {
-
+      this.setState({
+        spinStatus: false
+      })
     })
   }
   /**在componentDidMount这个生命周期函数里初始化富文本编辑器 */
@@ -143,6 +193,11 @@ class Edit extends Component {
       },
     };
     return (
+      // 最外层添加Spin组件 ;使得产生保存过程中不能进行文章的更改
+      <Spin
+      spinning={this.state.spinStatus}
+      tip={this.state.spinTip}
+      >
       <Card title={"编辑文章"} extra={<Button type="primary" onClick={this.cancelHandler}>取消</Button>} style={{ width: "100%" }}>
         {/* 这里这个handleSumbit的方法 是我们下面的按钮点击之后的方法 */}
         <Form 
@@ -216,9 +271,9 @@ class Edit extends Component {
         </Form.Item>
 
         
-        {/* 创建时间字段 */}
+        {/* 发布时间字段 */}
         <Form.Item 
-        label="创建时间"
+        label="发布时间" // 创建时间应该引用为系统的
         >
           {getFieldDecorator('createAt', { // username这个名字就是我们在输入框获取到信息提交的字段名
             rules: [// 匹配规则 提示信息 数组的形式
@@ -293,6 +348,8 @@ class Edit extends Component {
 
       
       </Card>
+
+      </Spin>
 
     )
   }

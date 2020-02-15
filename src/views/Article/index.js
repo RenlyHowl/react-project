@@ -16,7 +16,8 @@ import {
   Modal, // 弹框
   Typography, //排版组件
   message, // 全局提示组件
-  Tooltip, // 文字提示组件
+  Tooltip,
+  Spin, // 文字提示组件
 } from "antd"
 
 // 导入我们axios请求实例
@@ -67,7 +68,8 @@ export default class List extends Component {
     visible: false,
     delArticleContent: null, // 显示的content内容
     delArticleId: null, //显示的id
-    confirmLoading: false // 点击确定是否显示loading状态
+    confirmLoading: false, // 点击确定是否显示loading状态
+    spinStatus: false // 加载数据的状态
     }
   }
   
@@ -80,6 +82,10 @@ export default class List extends Component {
          extra={<Button type="primary" onClick= {this.toExcel}>导出excel</Button>}
          >
         
+        <Spin
+        spinning={this.state.spinStatus}
+        tip="数据加载中"
+        >
         <Table 
         rowKey= {(record) => {return record.id}}
         dataSource={this.state.dataSource} 
@@ -115,7 +121,7 @@ export default class List extends Component {
            *当我们点击的时候将变量传过去即可  */ }
           {this.state.delArticleContent}
         </Modal>
-
+        </Spin>
         </Card>
       </div>
     )
@@ -387,7 +393,8 @@ export default class List extends Component {
   // 请求数据的方法
   getData = () => {
     this.setState({
-      isLoading: true
+      isLoading: true,
+      spinStatus: true
     })
 
     getArticleList(this.state.offset, this.state.limited)
@@ -419,7 +426,8 @@ export default class List extends Component {
     })
     .finally(() => {
       this.setState({
-        isLoading: false
+        isLoading: false,
+        spinStatus: false
       })
     })
   }
