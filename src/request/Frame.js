@@ -90,7 +90,13 @@ export const getArticleList = (offset = 0, limited = 10) => {
 }
 
 
-// 这里是删除文章的方法
+// 这里是通过id删除文章的方法
 export const deleteArticle = (id) => {
   return service.post(`/api/v1/article/delete/${id}`)
+}
+
+
+// 通过id获取单个文章的方法
+export const editArticle = (id) => {
+  return service.post(`/api/v1/article/${id}`)
 }

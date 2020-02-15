@@ -3,6 +3,10 @@ import React, { Component, createRef } from 'react'
 // 引入wangeditor富文本编辑器
 import wangEditor  from "wangeditor"
 
+// 引入编辑数据的方法
+import {
+  editArticle
+} from "../../request/Frame"
 import {
   Card,
   Button,
@@ -13,6 +17,8 @@ import {
   Col,
   DatePicker, //选择时间组件
 } from "antd" 
+// 导入moment
+import moment from "moment"
 
 import zhCN from "antd/es/locale/zh_CN"
 // 引入富文本编辑器的样式
@@ -41,6 +47,8 @@ class Edit extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values); // 没有错误 就后台打印
+        /**通过我们上面打印这些值 可以发现createAt是一个moment对象;我们需要把它转成时间戳 */
+        // console.log(values.createAt.valueOf()) // 通过valueOf方法可以转成时间戳
       }
     });
   };
@@ -69,9 +77,44 @@ class Edit extends Component {
     this.editor.create();
   }
 
+  // 请求渲染数据的方法
+  getData = () => {
+    // console.log(this.props)
+    /**
+     * 这里id的获取是通过this.props.match.params.id来获取的
+     */
+    editArticle(this.props.match.params.id)
+    .then((resp) => {
+      // console.log(resp)
+      /**获取到数据之后我们需要给他去setFiledsValue */
+      // this.props.form.setFieldsValue({
+      //   title: resp.title,
+      //   author: resp.author,
+      //   amount: resp.amount,
+      //   createAt: moment(resp.createAt), // 设置时间要传moment对象
+      // })
+
+      /**
+       * 上面这样传参数我们也可以缩写成下面这样
+       */
+      const {id, ...data} = resp; // 我们使用id的时候直接从路由里去取就可以了
+      data.createAt = moment(resp.createAt);
+      this.props.form.setFieldsValue(data) // 这里设置了content的时候 编辑器没有渲染 我们需要使用它的API
+
+      // 渲染编辑器内容
+      this.editor.txt.html(data.content)
+
+    })
+    .finally(() => {
+
+    })
+  }
   /**在componentDidMount这个生命周期函数里初始化富文本编辑器 */
   componentDidMount() {
     this.initEditor(); // 初始化富文本编辑器
+
+    // 获取数据
+    this.getData();
   }
   render() {
     // console.log(this.props);
