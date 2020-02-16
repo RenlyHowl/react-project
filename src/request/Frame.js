@@ -107,3 +107,9 @@ export const editArticle = (id) => {
 export const saveArticle = (id, params) => {
   return service.post(`/api/v1/articleEdit/${id}`, params)
 }
+
+
+// 获取文章阅读量的方法
+export const getArticleAmount = () => {
+  return service.post(`/api/v1/articleAmount`)
+}

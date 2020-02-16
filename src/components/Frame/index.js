@@ -4,7 +4,8 @@ import {
   Layout,
   Menu, 
   // Breadcrumb, 
-  Icon 
+  Icon ,
+  Dropdown
 } from 'antd';
 // 导入logo图片
 import logo from "./logo.png"
@@ -37,16 +38,46 @@ class Frame extends Component {
     */
    this.props.history.push(key) // 使用history下的push方法跳转
   }
+  // 下拉菜单的设置
+  menu = (
+    <Menu>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
+          1st menu item
+        </a>
+      </Menu.Item>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
+          2nd menu item
+        </a>
+      </Menu.Item>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
+          3rd menu item
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
+
   render() {
     // 对导入的adminRouter进行处理 在渲染
     const menu = adminRouter.filter(item => item.isNav === true)
     return (
       <Layout style={{minHeight: "100%"}}>
-    <Header className="header qf-header" style={{backgroundColor: "#fff"}}>
+        {/* 下面下拉菜单不显示;设置display为flex */}
+    <Header className="header qf-header" style={{backgroundColor: "#fff", display: "flex"}}>
       <div className="qf-logo">
       {/* <img src="./logo.png" /> */}
       <img src={logo} height="40px" alt="logo" />
       </div>
+
+      {/* 右上角的UI部分 */}
+      <Dropdown overlay={this.menu} className="qf-Dropdown">
+      <a className="ant-dropdown-link" href="#">
+        Hover me <Icon type="down" />
+      </a>
+      </Dropdown>
+
     </Header>
     <Layout>
       <Sider width={200} style={{ background: '#fff' }}>
