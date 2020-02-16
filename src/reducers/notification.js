@@ -32,7 +32,19 @@ const initState = {
 }
 
 const notificationReducer = (state = initState, action) => {
+  // console.log(action.type);
   switch(action.type) {
+    // 处理我们第一次接收的数据
+    case actionType.RECEIVE_NOTIFICATION:
+      return {
+        list: action.list,
+        isLoading: action.isLoading
+      }
+    case actionType.START_MARK: 
+    return {
+      ...state,
+      isLoading: true
+    }
     case actionType.MARK_NOTIFICATION_BY_ID: 
     // console.log("进行取反"); //测试能够dispatch出来
     const newList = state.list.map((item) => {
@@ -52,6 +64,11 @@ const notificationReducer = (state = initState, action) => {
           item.hasRead = true;
           return item;
         })
+      }
+      case actionType.FINSH_MARK: 
+      return {
+        ...state,
+        isLoading: false
       }
     default:
       return state

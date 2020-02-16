@@ -113,3 +113,11 @@ export const saveArticle = (id, params) => {
 export const getArticleAmount = () => {
   return service.post(`/api/v1/articleAmount`)
 }
+
+
+
+// 获取通知中心列表的方法
+export const getNotification = () => {
+  return service.post(`/api/v1/notification`)
+}
+

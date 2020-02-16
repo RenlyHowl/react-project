@@ -6,8 +6,10 @@ import {connect} from "react-redux"
 // 引入action中对应的notification
 import {
   markNotificationAsReadById,
-  markAllNotification
+  markAllNotification,
+  getNotificationList
 } from "../../actions/notification"
+
 
 
 import {
@@ -15,7 +17,8 @@ import {
   Button,
   List,
   Avatar,
-  Badge
+  Badge,
+  Spin
 } from "antd"
 // 假数据
 // const data = [
@@ -38,21 +41,30 @@ import {
 // ];
 const mapStateToProps = state => {
   const {
-    list = [] //让他默认值为空
+    list = [], //让他默认值为空
+    isLoading
   } = state.notification
   return {
-    list
+    list,
+    isLoading
   }
 }
 // 可以在第二个参数挂载到props上
-@connect(mapStateToProps,{markNotificationAsReadById, markAllNotification})
+@connect(mapStateToProps,{markNotificationAsReadById, markAllNotification, getNotificationList})
 class Notification extends Component {
+  componentDidMount() {
+    // 调用获取消息队列数据的action
+    this.props.getNotificationList();
+  }
   render() {
     // console.log(this.props); //发现this.props上已经挂载了我们的store
     return (
-      <>
+      <Spin
+      spinning={this.props.isLoading}
+      tip="数据正在请求中"
+      >
       <Card 
-      title="Default size card" 
+      title="通知中心" 
       bordered={false}
       extra={<Button onClick={this.props.markAllNotification}  disabled={this.props.list.every(item => item.hasRead === true)}>全部标记为已读</Button>} 
       // style={{ width: 300 }}
@@ -89,7 +101,7 @@ class Notification extends Component {
 
       </Card>
 
-      </>
+      </Spin>
     )
   }
 }
