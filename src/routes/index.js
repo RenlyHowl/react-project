@@ -5,7 +5,8 @@ import {
   Login,
   NotFound,
   DashBoard,
-  Settings
+  Settings,
+  Notification
 } from "../views"
 
 // 向外暴露我们的路由匹配规律
@@ -17,7 +18,7 @@ export const mainRouter = [
   {
     pathname: "/404",
     component: NotFound
-  },
+  }
 ]
 // mainRouter是我们不需要登录就能访问页面的路由
 
@@ -29,6 +30,17 @@ export const adminRouter = [
     tittle: "仪表盘",
     isNav: true,
     icon: "dashboard"
+  },
+
+  {
+    pathname: "/admin/notification",
+    component: Notification,
+    /**
+     * Notification不需要设置菜单页
+     */
+    // tittle: "通知中心",
+    // isNav: true,
+    // icon: "notification"
   },
   
   {

@@ -5,7 +5,10 @@ import {
   Menu, 
   // Breadcrumb, 
   Icon ,
-  Dropdown
+  Dropdown,
+  Typography,
+  Avatar, // 头像展示
+  Badge
 } from 'antd';
 // 导入logo图片
 import logo from "./logo.png"
@@ -38,23 +41,30 @@ class Frame extends Component {
     */
    this.props.history.push(key) // 使用history下的push方法跳转
   }
+  dropdown = ({key}) => {// { item, key, keyPath, domEvent }
+    // console.log({ item, key, keyPath, domEvent });
+    /**跳转到对应页面;
+     * 我们不能只是简单的进行跳转,如果是退出登入的话,我们还要进行登入信息的清除
+     */
+    this.props.history.push(key);
+    
+  }
   // 下拉菜单的设置
   menu = (
-    <Menu>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-          1st menu item
-        </a>
+    <Menu onClick={this.dropdown}>
+      <Menu.Item key="/admin/notification">
+        {/* 有消息 通知中心上显示小红点 */}
+      <Badge dot>
+          通知中心
+      </Badge>
       </Menu.Item>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-          2nd menu item
-        </a>
+
+      <Menu.Item key="/admin/settings"> 
+          个人设置
       </Menu.Item>
-      <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-          3rd menu item
-        </a>
+
+      <Menu.Item key="/login">
+          退出登入
       </Menu.Item>
     </Menu>
   );
@@ -72,10 +82,16 @@ class Frame extends Component {
       </div>
 
       {/* 右上角的UI部分 */}
-      <Dropdown overlay={this.menu} className="qf-Dropdown">
-      <a className="ant-dropdown-link" href="#">
-        Hover me <Icon type="down" />
-      </a>
+      <Dropdown overlay={this.menu} trigger={["hover"]}>
+        {/* 设置居中对齐 */}
+      <div className="ant-dropdown-link" style={{cursor: "pointer", display: "flex", alignItems: "center"}}>
+        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+        <Badge count={25} offset={[10, -10]}>
+        <Typography.Text strong>欢迎您,Renly!</Typography.Text> 
+        </Badge>
+        
+        <Icon type="down" />
+      </div>
       </Dropdown>
 
     </Header>
