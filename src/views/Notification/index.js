@@ -3,6 +3,12 @@ import React, { Component } from 'react'
 
 // 导入要使用的store
 import {connect} from "react-redux"
+// 引入action中对应的notification
+import {
+  markNotificationAsReadById,
+  markAllNotification
+} from "../../actions/notification"
+
 
 import {
   Card,
@@ -30,15 +36,16 @@ import {
 //     content: "Ant Design Title 4"
 //   },
 // ];
-// const mapStateToProps = state => {
-//   const {
-//     list = [] //让他默认值为空
-//   } = state.notification
-//   return {
-//     list
-//   }
-// }
-// @connect(mapStateToProps)
+const mapStateToProps = state => {
+  const {
+    list = [] //让他默认值为空
+  } = state.notification
+  return {
+    list
+  }
+}
+// 可以在第二个参数挂载到props上
+@connect(mapStateToProps,{markNotificationAsReadById, markAllNotification})
 class Notification extends Component {
   render() {
     // console.log(this.props); //发现this.props上已经挂载了我们的store
@@ -47,7 +54,7 @@ class Notification extends Component {
       <Card 
       title="Default size card" 
       bordered={false}
-      extra={<Button disabled={this.props.list.every(item => item.hasRead === true)}>全部标记为已读</Button>} 
+      extra={<Button onClick={this.props.markAllNotification}  disabled={this.props.list.every(item => item.hasRead === true)}>全部标记为已读</Button>} 
       // style={{ width: 300 }}
       >
         {/* 使用List组件来做通知信息的渲染 */}
@@ -56,7 +63,8 @@ class Notification extends Component {
           dataSource={this.props.list} //使用我们store的数据
           renderItem={item => (
             <List.Item
-            extra={item.hasRead ? null : <Button>标记为已读</Button>}
+            // 方法后面也可以使用bind改变this的指向
+            extra={item.hasRead ? null : <Button onClick={this.props.markNotificationAsReadById.bind(this,item.id)}>标记为已读</Button>}          
             >
               <List.Item.Meta
                   //未读显示为红点 
@@ -85,13 +93,13 @@ class Notification extends Component {
     )
   }
 }
-
-const mapStateToProps = state => {
-  const {
-    list = [] //让他默认值为空
-  } = state.notification
-  return {
-    list
-  }
-}
-export default connect(mapStateToProps)(Notification)
+export default Notification
+// const mapStateToProps = state => {
+//   const {
+//     list = [] //让他默认值为空
+//   } = state.notification
+//   return {
+//     list
+//   }
+// }
+// export default connect(mapStateToProps, {markNotificationAsReadById})(Notification)

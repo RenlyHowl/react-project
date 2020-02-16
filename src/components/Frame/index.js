@@ -69,30 +69,58 @@ class Frame extends Component {
     
   }
   // 下拉菜单的设置
-  menu = (
-    <Menu onClick={this.dropdown}>
-      <Menu.Item key="/admin/notification">
-        {/* 有消息 通知中心上显示小红点 */}
-      <Badge 
-      // dot={this.props.notificationStatus? true: false}
-      dot={Boolean(this.props.notificationCount)}
-      >
-          通知中心
-      </Badge>
-      </Menu.Item>
+  /**
+   * 不能放在外面;放在外面不会重新渲染是写死的
+   * 我们可以写成一个方法
+   */
+  // menu = (
+  //   <Menu onClick={this.dropdown}>
+  //     <Menu.Item key="/admin/notification">
+  //       {/* 有消息 通知中心上显示小红点 */}
+  //     <Badge 
+  //     // dot={this.props.notificationStatus? true: false}
+  //     dot={Boolean(this.props.notificationCount)}
+  //     >
+  //         通知中心
+  //     </Badge>
+  //     </Menu.Item>
 
-      <Menu.Item key="/admin/settings"> 
-          个人设置
-      </Menu.Item>
+  //     <Menu.Item key="/admin/settings"> 
+  //         个人设置
+  //     </Menu.Item>
 
-      <Menu.Item key="/login">
-          退出登入
-      </Menu.Item>
-    </Menu>
-  );
+  //     <Menu.Item key="/login">
+  //         退出登入
+  //     </Menu.Item>
+  //   </Menu>
+  // );
 
+  // 右上角UI数据的方法
+  renderMenu = () => 
+   (
+      <Menu onClick={this.dropdown}>
+        <Menu.Item key="/admin/notification">
+          {/* 有消息 通知中心上显示小红点 */}
+        <Badge 
+        // dot={this.props.notificationStatus? true: false}
+        dot={Boolean(this.props.notificationCount)}
+        >
+            通知中心
+        </Badge>
+        </Menu.Item>
+  
+        <Menu.Item key="/admin/settings"> 
+            个人设置
+        </Menu.Item>
+  
+        <Menu.Item key="/login">
+            退出登入
+        </Menu.Item>
+      </Menu>
+    )
   render() {
-    console.log(this.props)
+    
+    // console.log(this.props);
     // 对导入的adminRouter进行处理 在渲染
     const menu = adminRouter.filter(item => item.isNav === true)
     return (
@@ -105,7 +133,10 @@ class Frame extends Component {
       </div>
 
       {/* 右上角的UI部分 */}
-      <Dropdown overlay={this.menu} trigger={["hover"]}>
+      <Dropdown 
+      // overlay={this.menu} 
+      overlay={this.renderMenu()}
+      trigger={["hover"]}>
         {/* 设置居中对齐 */}
       <div className="ant-dropdown-link" style={{cursor: "pointer", display: "flex", alignItems: "center"}}>
         <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
