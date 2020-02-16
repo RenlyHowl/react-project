@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 
+// 引入connect
+import {connect} from "react-redux"
+
 import { 
   Layout,
   Menu, 
@@ -10,6 +13,7 @@ import {
   Avatar, // 头像展示
   Badge
 } from 'antd';
+
 // 导入logo图片
 import logo from "./logo.png"
 // 导入我们的样式
@@ -27,7 +31,22 @@ const { Header, Content, Sider } = Layout;
 
 
 
+const mapStateToProps = state => {
+  // const status = state.notification.list.find(item => item.hasRead === false);
+  return {
+    // 只需要返回未读的数据条数
+    notificationCount: state.notification.list.filter(item => item.hasRead === false).length, // 返回数组的长度
+
+    //返回通知信息的状态
+    // notificationStatus: status //返回的是一个对象 没有找到为undefined 找到了就为一个对象
+
+    /**也可以不用这样,直接通过我们上面的数组的长度为多少,为0就代表全已读false;
+     * 我们通过Boolean来取布尔值
+     */
+  }
+}
 // 使用高阶组件嵌套暴露Frame组件
+@connect(mapStateToProps)
 @withRouter
 class Frame extends Component {
   onMenuClick = ({key}) => {
@@ -54,7 +73,10 @@ class Frame extends Component {
     <Menu onClick={this.dropdown}>
       <Menu.Item key="/admin/notification">
         {/* 有消息 通知中心上显示小红点 */}
-      <Badge dot>
+      <Badge 
+      // dot={this.props.notificationStatus? true: false}
+      dot={Boolean(this.props.notificationCount)}
+      >
           通知中心
       </Badge>
       </Menu.Item>
@@ -70,6 +92,7 @@ class Frame extends Component {
   );
 
   render() {
+    console.log(this.props)
     // 对导入的adminRouter进行处理 在渲染
     const menu = adminRouter.filter(item => item.isNav === true)
     return (
@@ -86,7 +109,10 @@ class Frame extends Component {
         {/* 设置居中对齐 */}
       <div className="ant-dropdown-link" style={{cursor: "pointer", display: "flex", alignItems: "center"}}>
         <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-        <Badge count={25} offset={[10, -10]}>
+        <Badge 
+        count={this.props.notificationCount} // 渲染数字
+        offset={[10, -10]}
+        >
         <Typography.Text strong>欢迎您,Renly!</Typography.Text> 
         </Badge>
         

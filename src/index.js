@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-
+import {Provider} from "react-redux"
+import store from "./store"
 
 // 导入路由
 import {
@@ -15,15 +16,22 @@ import {
 import {
   mainRouter
 } from "./routes"
+
+// 引用redux通信的store
+
+
 // 导入antd组件库
 import {ConfigProvider} from "antd"
 import zhCN from "antd/es/locale/zh_CN"
 
+
 // 导入less样式
 import "./index.less"
 ReactDOM.render( 
-<ConfigProvider locale={zhCN}>
+  // 使用Provider进行包裹,使得包裹的组件进行redux通信
+  <Provider store={store}>
 
+<ConfigProvider locale={zhCN}>
 <Router>
     <Switch>
       
@@ -62,6 +70,7 @@ ReactDOM.render(
     </Switch>
     
   </Router>
-
 </ConfigProvider>
+
+  </Provider>
   , document.getElementById('root'));
