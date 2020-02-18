@@ -94,6 +94,8 @@ export const getNotificationList = () => {
         ...resp, 
         type: actionType.RECEIVE_NOTIFICATION
       });
+
+      
       // 请求完成
       dispatch(
         finishMark()
