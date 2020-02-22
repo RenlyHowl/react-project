@@ -36,14 +36,17 @@ ReactDOM.render(
     <Switch>
       
     <Route path="/admin" render={(routerProps) => {
-      // 权限 需要登录才能访问admin
-      /*
-      当访问的路径为/admin的时候,才渲染App组件;
-      但是在渲染之前我们还需要判断是否登录了,只要登录了才能够访问我们的admin页面
-      */
-      return(
-        <App {...routerProps}/>
-      )
+      /**
+       * 权限认证 从store里取isLogin的登录状态(这里要用getState方法才能获取到state)
+       */
+      // return (
+      //   store.getState().user.isLogin 
+      // ? 
+      // <App {...routerProps}/> 
+      // : 
+      // <Redirect to="/login" />
+      // )
+      return <App {...routerProps}/> 
     }}></Route>
 
 

@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 
-// 应用antd组件库中的组件
-// import {
-//   Spin,
-//   Alert,
-//   Button
-// } from "antd"
-// 导入路由匹配规则
+// 导入connect
+import {connect} from "react-redux"
+
 import {
   adminRouter
 } from "./routes" // 需要验证登录的路由匹配规则
@@ -20,11 +16,21 @@ import {
 
 // 导入我们的layout布局文件 Frame插件
 import Frame  from "./components/Frame"
-
-export default class App extends Component {
+const mapStateToProps = state => {
+  return {
+    isLogin: state.user.isLogin
+  }
+}
+@connect(mapStateToProps)
+class App extends Component {
   render() {
-    // console.log(this.props);
+    // console.log(this.props.isLogin);
+    /**
+     * 权限认证
+     */
     return (
+    this.props.isLogin
+    ?
       <>
         {/* 渲染admin里面的页面 */}
         <Frame>
@@ -56,8 +62,11 @@ export default class App extends Component {
         </Frame>
         
       </>
+      : 
+      <Redirect to="/login"/>
     )
   }
 }
 
 
+export default App

@@ -9,10 +9,15 @@ import {
   Button,
   Checkbox,
   Icon,
-  Card
+  Card,
+
 } from "antd"
+import {userLogin} from "../../actions/user"
+import {connect} from "react-redux"
 
-
+import {
+  Redirect,
+} from "react-router-dom"
 
 
 //  导入样式
@@ -42,8 +47,14 @@ import "./index.less"
     
 //   }
 // }
-
+const mapState = (state) => {
+  return {
+    isLogin: state.user.isLogin,
+    isLoading: state.user.isLoading
+  }
+}
 @Form.create()
+@connect(mapState, {userLogin})
 class Login extends Component {
   handleSubmit = (e)=> {
     e.preventDefault();
@@ -51,12 +62,18 @@ class Login extends Component {
       if (!err) {
         console.log('Received values of form: ', values);
       }
+      // 登录接口的方法
+      this.props.userLogin(values)
     });
-  };
 
+  };
   render() {
     const {getFieldDecorator} = this.props.form;
     return (
+    this.props.isLogin
+    ?
+     <Redirect to="/admin" />
+    :
      <Card
     //  style={{height: "100%", background:"#fffff url('./login.jpg') no-repeat fixed top"}}
      title="Qf-Admin登录"
@@ -95,7 +112,7 @@ class Login extends Component {
             valuePropName: 'checked',
             initialValue: true,
           })(<Checkbox>记住我</Checkbox>)}
-          <Button type="primary" htmlType="submit" className="login-form-button" style={{width: "100px"}}>
+          <Button disabled={this.props.isLoading} loading={this.props.isLoading} type="primary" htmlType="submit" className="login-form-button" style={{width: "100px"}}>
             登录
           </Button>
         </Form.Item>

@@ -19,6 +19,10 @@ const service = axios.create({
   // baseURL: "http://rap2api.taobao.org/app/mock/243199",
 
 })
+// 用户登录的实例
+const service1 = axios.create({
+  baseURL: isEnv ? "http://rap2api.taobao.org/app/mock/243199" : "",
+})
 
 // 3.设置拦截器(请求拦截器和响应拦截器)
 /*注意 是要设置两个 这里的拦截器是实例的拦截器(不是axios的拦截器
@@ -78,6 +82,9 @@ export const getArticleList = (offset = 0, limited = 10) => {
   // 加传token验证
   // return service.post("/api/v1/articlelist", {authToken: "renly"}); // 我们这里的authToken是放在拦截器里面进行设置的
   return service.post("/api/v1/articlelist", {
+
+
+    
     offset,
     limited,
   });
@@ -118,6 +125,13 @@ export const getArticleAmount = () => {
 
 // 获取通知中心列表的方法
 export const getNotification = () => {
-  return service.post(`/api/v1/notification`)
+  return service.post(`/api/v1/notification`) 
+}
+
+
+
+// 登录接口
+export const login = (params) => {
+  return service1.post("/api/v1/login", params)// 不再进行全局的拦截
 }
 
