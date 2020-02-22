@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 // 引入connect
 import {connect} from "react-redux"
-
+import {logout} from "../../actions/user"
 import { 
   Layout,
   Menu, 
@@ -30,7 +30,7 @@ import {adminRouter} from "../../routes"
 const { Header, Content, Sider } = Layout;
 
 
-
+ 
 const mapStateToProps = state => {
   // const status = state.notification.list.find(item => item.hasRead === false);
   return {
@@ -43,10 +43,16 @@ const mapStateToProps = state => {
     /**也可以不用这样,直接通过我们上面的数组的长度为多少,为0就代表全已读false;
      * 我们通过Boolean来取布尔值
      */
+    
+     /**
+      * 渲染登录后的用户信息
+      */
+    displayName: state.user.displayName,
+    avatar: state.user.avatar,
   }
 }
 // 使用高阶组件嵌套暴露Frame组件
-@connect(mapStateToProps)
+@connect(mapStateToProps, {logout})
 @withRouter
 class Frame extends Component {
   onMenuClick = ({key}) => {
@@ -65,7 +71,13 @@ class Frame extends Component {
     /**跳转到对应页面;
      * 我们不能只是简单的进行跳转,如果是退出登入的话,我们还要进行登入信息的清除
      */
-    this.props.history.push(key);
+    if (key === "/login") {
+      this.props.logout();
+      // 不用再去跳转到login了,因为我们全局判断了当isLogin的状态为false时,自动跳转到login登录页面
+    } else {
+      this.props.history.push(key);
+    }
+    
     
   }
   // 下拉菜单的设置
@@ -139,12 +151,13 @@ class Frame extends Component {
       trigger={["hover"]}>
         {/* 设置居中对齐 */}
       <div className="ant-dropdown-link" style={{cursor: "pointer", display: "flex", alignItems: "center"}}>
-        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+        {/* <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> */}
+        <Avatar src={this.props.avatar} />
         <Badge 
         count={this.props.notificationCount} // 渲染数字
         offset={[10, -10]}
         >
-        <Typography.Text strong>欢迎您,Renly!</Typography.Text> 
+        <Typography.Text strong>欢迎您,{this.props.displayName}</Typography.Text> 
         </Badge>
         
         <Icon type="down" />
