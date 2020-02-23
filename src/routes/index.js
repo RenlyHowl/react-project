@@ -6,7 +6,9 @@ import {
   NotFound,
   DashBoard,
   Settings,
-  Notification
+  Notification,
+  NoAuth,
+  Profile
 } from "../views"
 
 // 向外暴露我们的路由匹配规律
@@ -29,18 +31,17 @@ export const adminRouter = [
     component: DashBoard,
     tittle: "仪表盘",
     isNav: true,
-    icon: "dashboard"
+    icon: "dashboard",
+    /**
+     * 绑定登录后访问页面的权限角色
+     */
+    role: ["001", "002", "003"]
   },
 
   {
     pathname: "/admin/notification",
     component: Notification,
-    /**
-     * Notification不需要设置菜单页
-     */
-    // tittle: "通知中心",
-    // isNav: true,
-    // icon: "notification"
+    role: ["001", "002", "003"]
   },
   
   {
@@ -49,21 +50,31 @@ export const adminRouter = [
     exact: true, // 完全匹配
     tittle: "文章管理",
     isNav: true,
-    icon: "unordered-list"
-    /* 如果我们这里配置了children的话;
-    在App组件里面就得在内层里面再次的循环渲染内存的子组件;
-    要不然children不能渲染出来*/
+    icon: "unordered-list",
+    role: ["001", "002"]
   },
   {
     pathname: "/admin/article/edit/:id",
-    component: ArticleEdit
+    component: ArticleEdit,
+    role: ["001"]
   },
   {
     pathname: "/admin/settings",
     component: Settings,
     isNav: true,
     tittle: "设置",
-    icon: "setting"
+    icon: "setting",
+    role: ["001"]
+  },
+  {
+    pathname: "/admin/noauth",
+    component: NoAuth,
+    role: ["001", "002", "003"]
+  },
+  {
+    pathname: "/admin/profile", // 个人设置页面
+    component: Profile,
+    role: ["001", "002", "003"]
   },
 ]
 

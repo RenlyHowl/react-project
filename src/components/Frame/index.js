@@ -121,7 +121,7 @@ class Frame extends Component {
         </Badge>
         </Menu.Item>
   
-        <Menu.Item key="/admin/settings"> 
+        <Menu.Item key="/admin/profile"> 
             个人设置
         </Menu.Item>
   

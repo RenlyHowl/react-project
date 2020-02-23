@@ -62,7 +62,7 @@ export default class DashBoard extends Component {
             data: valueMaps
         }]
       };
-
+      if (! this.updater.isMounted(this)) return null;
       this.setState({
         option: option
       });

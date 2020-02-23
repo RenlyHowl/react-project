@@ -390,6 +390,11 @@ export default class List extends Component {
     });
   }
 
+  // 重新封装setState的方法
+  setData = (state) => {
+    if (! this.updater.isMounted(this)) return null;
+    this.setState(state);
+  }
   // 请求数据的方法
   getData = () => {
     this.setState({
@@ -413,8 +418,19 @@ export default class List extends Component {
        */
       const columns = this.createColumns(columnsKeys);
 
-      this.setState({
-        // columns: resp.lists,
+      /**
+       * 如果组件还存在没被销毁,就进行setState的操作;如果被销毁了就不进行setState的操作   */  
+      // 如果请求完之后组件已经被销毁了就不用再去设置setState了
+      // console.log(this.updater.isMounted(this));
+      // if (! this.updater.isMounted(this)) return null;
+      // this.setState({
+      //   total: resp.total,
+      //   columns,
+      //   dataSource: resp.lists,
+      // })
+
+      // 使用封装后setState的操作
+      this.setData({
         total: resp.total,
         columns,
         dataSource: resp.lists,
@@ -425,7 +441,15 @@ export default class List extends Component {
       console.log(err)
     })
     .finally(() => {
-      this.setState({
+      /**
+       * 因为我们这里也有setState,所以也要进行设置
+       */
+      // if (! this.updater.isMounted(this)) return null;
+      // this.setState({
+      //   isLoading: false,
+      //   spinStatus: false
+      // })
+      this.setData({
         isLoading: false,
         spinStatus: false
       })
@@ -434,5 +458,11 @@ export default class List extends Component {
   // 请求数据
   componentDidMount(){
     this.getData();
+  }
+
+  // 组件销毁阶段之前
+  componentWillUnmount() {
+    // console.log("文章组件被销毁");
+    // console.log(this.updater.isMounted(this))  
   }
 }

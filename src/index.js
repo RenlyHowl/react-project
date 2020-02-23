@@ -7,7 +7,7 @@ import store from "./store"
 
 // 导入路由
 import {
-  HashRouter as Router,
+  HashRouter as Router, 
   Switch,
   Route,
   Redirect

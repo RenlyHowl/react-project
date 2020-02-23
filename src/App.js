@@ -18,7 +18,8 @@ import {
 import Frame  from "./components/Frame"
 const mapStateToProps = state => {
   return {
-    isLogin: state.user.isLogin
+    isLogin: state.user.isLogin,
+    role: state.user.role, //管理页面权限
   }
 }
 @connect(mapStateToProps)
@@ -44,8 +45,13 @@ class App extends Component {
             */
             return (
               <Route key={route.pathname} path={route.pathname} render={(routerProps) => {
+                // console.log(route.role.includes(this.props.role));
                 return (
+                  route.role.includes(this.props.role)
+                  ?
                   <route.component {...routerProps}></route.component>
+                  :
+                  <Redirect to="/admin/noauth" />
                 )
               }} exact/>
             )
