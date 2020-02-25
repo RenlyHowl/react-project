@@ -2,6 +2,19 @@ import React, { Component } from 'react'
 import {connect} from "react-redux"
 import {changeAvatar} from "../../actions/user"
 import axios from "axios"
+// counter相关的组件
+import Count from "./Count"
+import CounterDisplay from "./CounterDisplay"
+
+
+// 导入lodash作为深复制和浅复制使用
+// import _ from "lodash"
+// 导入immutable中的map
+// import {
+//   Map,
+//   List,
+//   fromJS
+// } from "immutable"
 import {
   Upload,
   Card,
@@ -16,6 +29,7 @@ const mapState = state => (
     avatarUrl: state.user.avatar
   }
 )
+
 @connect(mapState, {changeAvatar})
 class Profile extends Component {
   constructor() {
@@ -77,8 +91,85 @@ class Profile extends Component {
 
   render() {
     // console.log(this.props);
+    // window._ = _; // 将lodash挂载到window对象上
+    // 1.immutable之Map 对象
+
+    // const state = {
+    //   name: "qf",
+    //   courses: ["h5", "java", "python"]
+    // }
+    // const imstate = Map(state)
+    // /**
+    //  * 分别打印state和imstate的值发现这两个值的结果不一样,
+    //  * 第一个是原生的js对象,第二个是immutable对象;
+    //  * 我们同时通过.name去取他的值,imstate是取不到的;因为immutable对象的数据结构和原来的js对象不一样了,发生了改变;
+    //  * 要想去取他对应的值就使用这个对象上的get方法(state.name; imstate.get("name"));
+    //  * 
+    //  */
+    // console.log(state)
+    // console.log(imstate)
+    // /**改变值就用set方法,set方法返回的是一个新的immutable对象;
+    //  * 注意immutable数据每次更改的时候都会返回一个新的immutable对象;这就说明immutable.js能够保证上一次状态是可用的;
+    //  * 他每次都会返回一个新的拷贝,而且这个拷贝不是完全的;只是给更改的数据新开辟了一个内存,而没有更改的数据还是在原来的内存地址上;
+    //  * 只是改了的数据会开辟一个新的内存
+    //  */
+    // console.log(state.name)
+    // const imstate1 = imstate.set("name", "qf-im")
+    // console.log(imstate1.get("name"))
+
+    // 2.immutable之List 数组
+    // const list1 = List([1,2]);
+    // const list2 = list1.push(3,4,5);
+    // console.log(list1.get(4)) // 输出 undefined
+    // console.log(list2.get(4)) // 输出 5
+
+
+    // 3.1复杂数据结构 fromJs方法
+    // const state = {
+    //   name: "qf",
+    //   courses: ["h5", "java", "python"]
+    // }
+    // const imstate = fromJS(state);
+    // console.log(imstate)
+    // /**
+    //  * 如果我们想要去取数组里的值
+    //  */
+    // console.log(imstate.get("courses").get(1)) // "java"
+    // // 上面可以简写成下面的
+    // console.log(imstate.getIn(["courses", 1])) // java
+    
+    // 3.2 fromJs
+    // const state = {
+    //   name: "qf",
+    //   obj: {
+    //     x: 1,
+    //     y: {
+    //       z:2,
+    //     }
+    //   },
+    //   courses: ["h5", "java", "python"]
+    // }
+    // const imstate = fromJS(state);
+    // console.log(imstate)
+    // // console.log(imstate)
+    // // 取state下面的obj下面的y下面的z
+    // /**
+    //  * getIn方法里面的数组分层取我们的数据
+    //  */
+    // console.log(imstate.getIn(["obj", "y", "z"]))
+
+    // /**
+    //  * 使用setIn方法设置z的值
+    //  */
+    // // const newimstate = imstate.setIn(["obj", "y", "z"], 100);
+    // /**
+    //  * 我们也可以采用updateIn来设置复杂数据结构的值
+    //  */
+    // const newimstate = imstate.updateIn(["obj", "y", "z"], value => value + 2); // 当当前值加2,也就是在原来值的基础上加2
+    // console.log(newimstate.getIn(["obj", "y", "z"]))
+
+
     return (
-      <>
       <Card
       title="个人设置页面"
       bordered={false} // 取消边框
@@ -103,9 +194,10 @@ class Profile extends Component {
 
       </Upload>
       
+      <Count>+</Count>
+      <CounterDisplay>10</CounterDisplay>
+      <Count>-</Count>
       </Card>
-
-      </>
     )
   }
 }
