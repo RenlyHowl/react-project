@@ -51,10 +51,14 @@ class Profile extends Component {
       // console.log(resp);
       if(resp.status === 200) {
         // 返回成功
-        if (! this.updater.isMounted(this)) return null;
-        this.setState({
-          avatarUrl: resp.data.linkurl
-        })
+        // if (! this.updater.isMounted(this)) return null;
+        // this.setState({
+        //   avatarUrl: resp.data.linkurl
+        // })
+        /**
+         * 这里使用的是action,而不是使用state
+         */
+        this.props.changeAvatar(resp.data.linkurl)
       } else {
         // 自行处理错误
       }
@@ -72,7 +76,7 @@ class Profile extends Component {
   }
 
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     return (
       <>
       <Card
