@@ -25,6 +25,12 @@ const initState =  {
 
 const userReducer = (state = initState, action) => {
   switch(action.type) {
+    case actionType.CHANGE_AVATAR:
+    return {
+      ...state,
+      avatar: action.payLoad.avatarurl
+    }
+    
     case actionType.LOGIN_START:
     return {
       ...state,

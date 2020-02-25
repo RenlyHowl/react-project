@@ -96,5 +96,18 @@ export const logout = () => dispatch => {
 }
 
 
+// 更改头像
+/**参数就是我们的头像地址 */
+export const changeAvatar = (avatarurl) => dispatch => {
+  dispatch({
+    type: actionType.CHANGE_AVATAR,
+    payLoad: {
+      avatarurl
+    }
+  });
+}
+
+
+
 
 

@@ -10,4 +10,5 @@ export default {
   LOGIN_START: "LOGIN_START", //开始登录
   LOGIN_SUCCESS: "LOGIN_SUCCESS", // 登录成功
   LOGIN_FAIL: "LOGIN_FAIL", //登录失败
+  CHANGE_AVATAR: "CHANGE_AVATAR", // 更改头像
 }
